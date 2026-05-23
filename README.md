@@ -21,6 +21,35 @@ becomes repeated, before entropy drops, before the model produces garbage.
 
 ---
 
+## Demo
+
+```
+$ python collapse_radar.py --no-llm --scenario S1 --quiet
+
+  S1: 長文推論ループ  (circular reference snowball)
+  ──────────────────────────────────────────────────────────────────
+    t   γ_fast  γ_slow      Δγ    status
+    6   0.555   0.145  +0.411   ▓ GREEN
+    7   0.667   0.179  +0.487   ▓ GREEN
+   ...
+   13   0.119   0.140  -0.022   ▓ GREEN       ← drift starts, surface still GREEN
+   14   0.089   0.135  -0.046   ▓ GREEN
+   15   0.067   0.129  -0.062   ▒ YELLOW      ← Δγ fires here
+   16   0.050   0.124  -0.074   ▒ YELLOW
+   ...
+   24   0.005   0.089  -0.084   × RED
+   25   0.004   0.086  -0.082   × RED
+   26   0.003   0.082  -0.080   × RED         ← token_rep fires here
+
+  Status timeline: ······▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒×××▓▓▓
+
+  Δγ (YELLOW)  : t=15   ← earliest signal
+  token_rep↑   : t=26   ← conventional baseline
+  Lead         : +11 steps (~165 words of early warning)
+```
+
+Play the recorded demo: `asciinema play demo.cast`
+
 ## Key Insight
 
 > LLM collapse behaves like a phase transition.
