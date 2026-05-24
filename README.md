@@ -64,20 +64,28 @@ to surface metrics.
 
 ## Does Δγ Really Lead?
 
-Tested on **llama3.2** (Ollama) across 5 adversarial collapse scenarios:
+Tested on **llama3.2** (Ollama) across all 10 adversarial collapse scenarios:
 
-| Scenario | Δγ fires | token\_rep fires | entropy fires | **Lead vs rep** |
+| Scenario | Δγ fires | token\_rep fires | **Lead vs rep** | Final |
 |---|---|---|---|---|
-| S1 長文推論ループ | t=15 | t=19 | t=20 | **+4 steps** |
-| S2 再帰タスク崩壊 | t=13 | t=17 | t=18 | **+4 steps** |
-| S3 矛盾文脈ループ | t=12 | t=16 | t=9  | **+4 steps** |
-| S4 過負荷プロンプト | t=22 | t=22 | t=21 | +0 steps |
-| S5 敵対的推論崩壊 | t=12 | t=19 | t=20 | **+7 steps** |
-| **Average** | — | — | — | **+3.8 steps** |
+| S1 長文推論ループ | t=15 | t=19 | **+4 steps** | YELLOW |
+| S2 再帰タスク崩壊 | t=12 | t=17 | **+5 steps** | YELLOW |
+| S3 矛盾文脈ループ | t=12 | t=16 | **+4 steps** | GREEN |
+| S4 過負荷プロンプト | t=13 | t=22 | **+9 steps** | YELLOW |
+| S5 敵対的推論崩壊 | t=12 | t=19 | **+7 steps** | YELLOW |
+| S6 コード生成崩壊 | — | t=15 | (no Δγ alert) | GRAY |
+| S7 数学証明崩壊 | t=14 | — | (no rep alert) | YELLOW |
+| S8 多言語混在崩壊 | t=15 | t=10 | −5 steps | GREEN |
+| S9 ロールプレイ崩壊 | t=17 | t=16 | −1 steps | **RED** |
+| S10 CoT推論崩壊 | t=15 | t=19 | **+4 steps** | YELLOW |
+| **Average (where both fire)** | — | — | **+3.4 steps** | — |
 
-Each "step" ≈ 15 words of output. **+3.8 steps ≈ 57 words of early warning** before repetition
-becomes visible. For long-context agents, this is the difference between catching a runaway loop
-and letting it flood the context.
+**CRS (llama3.2): 0.619**
+
+Each "step" ≈ 15 words. **+3.4 steps ≈ 51 words of early warning** on average.
+S8/S9 (multilingual, roleplay) are exceptions where token_rep fired first — natural surface
+repetition in these domains is harder to distinguish from structural drift.
+S6 showed no Δγ alert: llama3.2 remained structurally stable on the code generation scenario.
 
 ---
 
